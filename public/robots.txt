@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /secret-admin/
+Allow: /
+
+Sitemap: https://naymish-blog.onrender.com/sitemap.xml
