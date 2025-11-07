@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Post | NayMish</title>
+  <meta name="description" content="Read full post on NayMish." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav">
+      <div class="logo">NayMish</div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="posts.html">Posts</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container post-page">
+    <article class="post-article">
+      <h1 id="post-title">Loading...</h1>
+      <p id="post-category" class="post-category"></p>
+      <img id="post-main-image" class="post-main-image hidden" alt="Post image" />
+      <div id="post-body" class="post-body"></div>
+
+      <div class="post-meta">
+        <button id="like-btn">👍 Like</button>
+        <span id="like-count">0</span> Likes
+      </div>
+
+      <section class="comments">
+        <h2>Comments</h2>
+        <div id="comments-list"></div>
+
+        <form id="comment-form">
+          <input id="comment-name" placeholder="Your name" required />
+          <textarea id="comment-text" placeholder="Your comment" required></textarea>
+          <button type="submit">Post Comment</button>
+        </form>
+      </section>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2025 NayMish — Understand Yourself. Grow Intentionally.
+</p>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="/secret-admin/comments.js"></script> <!-- optional admin comments script access -->
+</body>
+</html>
+
+    

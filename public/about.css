@@ -1,0 +1,154 @@
+/* ============================
+   ABOUT PAGE STYLES
+   Clean card, logo, and social link buttons (icon + text)
+   ============================ */
+
+:root{
+  --bg: #ffffff;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --accent: #0b5cff;
+  --border: rgba(17,24,39,0.06);
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(2,6,23,0.06);
+  --container-width: 900px;
+  --font: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* page background and font */
+body { font-family: var(--font); background: var(--bg); color: var(--text); -webkit-font-smoothing:antialiased; }
+
+/* centered header identical to main site */
+.header {
+  width:100%;
+  border-bottom: 1px solid var(--border);
+  background: #fff;
+}
+.header .header-inner {
+  width:90%;
+  max-width: var(--container-width);
+  margin: auto;
+  padding: 14px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+/* about card */
+.about-hero {
+  display: flex;
+  justify-content: center;
+  padding: 48px 20px;
+}
+.about-card {
+  width: 100%;
+  max-width: var(--container-width);
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 36px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+/* logo */
+.about-logo img {
+  width: 110px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid rgba(11,92,255,0.12);
+  margin-bottom: 18px;
+}
+
+/* title and tagline */
+.about-card h1 {
+  color: var(--text);
+  font-size: 1.7rem;
+  margin-bottom: 8px;
+}
+.about-card .tagline {
+  color: var(--muted);
+  font-size: 1rem;
+  margin-bottom: 18px;
+}
+
+/* about content text */
+.about-text {
+  color: #374151;
+  font-size: 1rem;
+  max-width: 740px;
+  margin: 0 auto 22px;
+  line-height: 1.65;
+}
+
+/* contact row */
+.about-contact {
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  align-items:center;
+}
+
+/* social link buttons — icon + label */
+.about-social {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+  margin-top:8px;
+}
+
+.social-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  background: var(--accent);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.18s ease, background 0.18s ease;
+  box-shadow: 0 6px 18px rgba(11,92,255,0.12);
+}
+
+.social-btn i {
+  font-size:1.05rem;
+  width:18px;
+  text-align:center;
+}
+
+.social-btn:hover {
+  transform: translateY(-4px);
+  background: #0846d6;
+}
+
+/* email shown as a button too */
+.email-btn {
+  display:inline-flex;
+  align-items:center;
+  gap:50px;
+  background: #f3f4f6;
+  color: var(--text);
+  padding: 8px 14px;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1px solid var(--border);
+}
+
+/* footer */
+footer {
+  margin-top: 28px;
+  padding-bottom: 30px;
+  text-align:center;
+  color: var(--muted);
+}
+
+/* responsive */
+@media (max-width: 720px){
+  .about-card { padding: 22px; }
+  .about-logo img { width: 92px; height: 92px; }
+  .about-card h1 { font-size: 1.4rem; }
+}

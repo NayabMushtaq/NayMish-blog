@@ -1,0 +1,402 @@
+/* ======================
+   GLOBAL STYLES
+====================== */
+
+:root {
+  --bg: #0f172a;        /* Deep navy dark background */
+  --bg-light: #1e293b;
+  --text: #e2e8f0;      
+  --text-light: #94a3b8;
+  --accent: #3b82f6;     /* Soft blue highlight */
+  --accent-light: #60a5fa;
+  --card-bg: #162238;
+  --border: #2a3b52;
+  --radius: 10px;
+  --transition: 0.3s ease;
+}
+body {
+  background: linear-gradient(135deg, #0f172a, #162544, #0f172a);
+  background-size: 200% 200%;
+  animation: gradientFlow 18s ease infinite;
+  color: var(--text);
+}
+
+@keyframes gradientFlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+img {
+  max-width: 100%;
+  border-radius: var(--radius);
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  max-width: 1100px;
+  padding-top: 1rem;
+  padding-bottom: 3rem;
+}
+
+/* ======================
+   NAVBAR
+====================== */
+
+.site-header {
+  background: var(--bg-light);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+}
+
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent-light);
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
+  color: var(--text-light);
+  transition: var(--transition);
+  font-size: 1rem;
+}
+.logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent-light);
+  transition: 0.4s ease;
+}
+
+.logo:hover {
+  text-shadow: 0 0 12px var(--accent-light);
+}
+
+.nav-links a:hover {
+  text-shadow: 0 0 8px var(--accent);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--accent-light);
+}
+
+
+/* ======================
+   HERO SECTION
+====================== */
+
+.hero {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+.hero h2, .hero p {
+  animation: fadeSlideUp 1.3s ease both;
+}
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero h2 {
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero p {
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+
+/* ======================
+   POSTS GRID
+====================== */
+
+.posts-grid {
+  display: grid;
+  gap: 1.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  margin-top: 1.5rem;
+}
+
+.post-card {
+  background: var(--card-bg);
+  border: 1px solid transparent;
+  padding: 1.3rem;
+  border-radius: var(--radius);
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.post-card {
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+.post-card h3 {
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.post-card:hover h3 {
+  color: var(--accent, #7AB7FF);
+}
+#post-body {
+  text-align: justify;
+  line-height: 1.7;
+  font-size: 17px;
+  word-spacing: 0.5px;
+}
+
+.post-card .excerpt {
+  color: #cccccc;
+  line-height: 1.5;
+}
+
+.post-card:hover {
+  border-color: var(--accent-light);
+  transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+  box-shadow: 0 0 18px rgba(59, 130, 246, 0.25);
+}
+
+.post-card h3 {
+  margin-top: 0.8rem;
+  font-size: 1.3rem;
+}
+
+.post-card p {
+  margin: 0.7rem 0;
+  color: var(--text-light);
+}
+
+.post-card .post-category-tag {
+  display: inline-block;
+  background: var(--accent);
+  padding: 0.2rem 0.7rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius);
+  margin-top: 0.5rem;
+}
+
+
+/* ======================
+   CATEGORY LIST
+====================== */
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.category-list button {
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.category-list button:hover {
+  background: var(--accent);
+  color: white;
+}
+
+
+/* ======================
+   ABOUT PAGE
+====================== */
+
+.about-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.about-card {
+  background: var(--card-bg);
+  padding: 2.5rem;
+  border-radius: var(--radius);
+  text-align: center;
+  width: 550px;
+  border: 1px solid var(--border);
+}
+
+.about-logo-img {
+  width: 120px;
+  border-radius: 50%;
+  margin-bottom: 1.2rem;
+}
+.about-logo-img {
+  animation: subtlePulse 5s ease-in-out infinite;
+}
+
+@keyframes subtlePulse {
+  0%, 100% { box-shadow: 0 0 0px rgba(59,130,246,0.1); }
+  50% { box-shadow: 0 0 25px rgba(59,130,246,0.35); }
+}
+
+.about-social {
+  display: flex;
+  justify-content: center;
+  gap: 1.4rem;
+  margin-top: 1rem;
+}
+
+.about-social a {
+  font-size: 1.6rem;
+  color: var(--accent-light);
+  transition: var(--transition);
+}
+
+.about-social a:hover {
+  color: white;
+  transform: scale(1.15);
+}
+
+
+/* ======================
+   POST PAGE
+====================== */
+
+.post-page h1 {
+  margin-bottom: 1rem;
+}
+
+.post-category {
+  color: var(--accent-light);
+  margin-bottom: 1rem;
+}
+
+.post-main-image {
+  margin: 1.2rem 0;
+  border-radius: var(--radius);
+}
+
+.post-body {
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.post-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 2rem;
+}
+
+#like-btn {
+  background: var(--accent);
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+#like-btn:hover {
+  background: var(--accent-light);
+}
+
+
+/* ======================
+   COMMENTS SECTION
+====================== */
+
+.comments textarea,
+#comment-name {
+  width: 100%;
+  background: var(--bg-light);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.6rem;
+  margin: 0.5rem 0;
+}
+
+.comments button {
+  background: var(--accent);
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.comments button:hover {
+  background: var(--accent-light);
+}
+
+
+/* ======================
+   FOOTER
+====================== */
+
+.site-footer {
+  text-align: center;
+  padding: 1.5rem;
+  border-top: 1px solid var(--border);
+  margin-top: 2rem;
+  color: var(--text-light);
+}
+
+
+/* ======================
+   MOBILE RESPONSIVENESS
+====================== */
+
+@media (max-width: 600px) {
+
+  .hero h2 {
+    font-size: 1.7rem;
+  }
+
+  .about-card {
+    width: 100%;
+    padding: 1.7rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .logo {
+    font-size: 1.3rem;
+  }
+}

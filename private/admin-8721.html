@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - NayMish</title>
+  <link rel="stylesheet" href="admin-style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+<body>
+  <div class="admin-container">
+    <div id="login-screen" class="card">
+      <h2>Admin Login</h2>
+      <input id="admin-pass" type="password" placeholder="Enter admin password" />
+      <button id="login-btn">Login</button>
+      <p id="login-msg"></p>
+    </div>
+
+    <div id="dashboard" class="hidden">
+      <header class="admin-header">
+        <h1>Admin Dashboard</h1>
+        <button id="logout-btn">Logout</button>
+      </header>
+
+      <section class="panel">
+        <h2>Posts</h2>
+        <button id="create-post-btn">New Post</button>
+
+        <div id="post-form" class="hidden form">
+          <input id="post-title" placeholder="Title" />
+          <textarea id="post-content" placeholder="Content (HTML allowed)"></textarea>
+          <input id="post-category" placeholder="Category" />
+          <input id="post-tags" placeholder="Tags (comma separated)" />
+          <label>Main Image</label>
+          <input id="post-main-image" type="file" accept="image/*" />
+          <label>Extra Images</label>
+          <input id="post-extra-images" type="file" accept="image/*" multiple />
+          <button id="save-post-btn">Save Post</button>
+        </div>
+
+        <div id="posts-list" class="items"></div>
+      </section>
+
+      <section class="panel">
+        <h2>About</h2>
+        <textarea id="about-text" placeholder="About text..."></textarea>
+        <input id="about-email" placeholder="Contact email" />
+        <div class="social-inputs">
+          <input id="social-youtube" placeholder="YouTube URL" />
+          <input id="social-github" placeholder="GitHub URL" />
+          <input id="social-instagram" placeholder="Instagram URL" />
+          <input id="social-twitter" placeholder="Twitter URL" />
+          <input id="social-linkedin" placeholder="LinkedIn URL" />
+          <input id="social-email" placeholder="Alternate email (no mailto)"/>
+        </div>
+        <button id="save-about-btn">Save About</button>
+      </section>
+
+      <section class="panel">
+        <h2>Comments</h2>
+        <div id="comments-list-admin">Loading comments...</div>
+      </section>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
