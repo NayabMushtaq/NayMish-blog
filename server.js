@@ -3,10 +3,6 @@ const express = require("express");
 const fs = require("fs");
 const fsp = require("fs").promises;
 const path = require("path");
-app.get('/sitemap.xml', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'));
-});
-
 const multer = require("multer");
 const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
@@ -33,7 +29,7 @@ for (const d of [DATA_DIR, PUBLIC_DIR, PRIVATE_DIR, UPLOADS_DIR]) {
   if (!fs.existsSync(d)) fs.mkdirSync(d, { recursive: true });
 }
 
-// Helper read/write JSON (synchronous when needed)
+// Helper read/write JSON
 async function readJSON(filePath, defaultValue) {
   try {
     await fsp.mkdir(path.dirname(filePath), { recursive: true });
@@ -81,6 +77,13 @@ app.use(express.static(PUBLIC_DIR));
 // Serve private admin files under /secret-admin
 app.use("/secret-admin", express.static(PRIVATE_DIR));
 
+// Serve sitemap.xml explicitly (fix: force XML content-type)
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'), {
+    headers: { 'Content-Type': 'application/xml' }
+  });
+});
+
 // Multer for uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -104,12 +107,12 @@ function adminAuth(req, res, next) {
   next();
 }
 
-/* ROUTES */
+/* -------- ROUTES -------- */
 
 // Health
 app.get("/api/ping", (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
 
-// Admin login - simple check
+// Admin login
 app.post("/api/login", (req, res) => {
   const { password } = req.body || {};
   if (!password) return res.status(400).json({ ok: false, message: "Missing password" });
@@ -117,8 +120,7 @@ app.post("/api/login", (req, res) => {
   return res.status(401).json({ ok: false, message: "Incorrect password" });
 });
 
-// -------- POSTS --------
-// List posts with optional filters q, category, page, limit
+// POSTS routes
 app.get("/api/posts", async (req, res) => {
   try {
     const posts = await readJSON(POSTS_FILE, []);
@@ -129,7 +131,7 @@ app.get("/api/posts", async (req, res) => {
   }
 });
 
-// Get single post by id
+// Get single post
 app.get("/api/posts/:id", async (req, res) => {
   try {
     const posts = await readJSON(POSTS_FILE, []);
@@ -142,7 +144,7 @@ app.get("/api/posts/:id", async (req, res) => {
   }
 });
 
-// Create post (admin) - supports mainImage + extraImages
+// Create post (admin)
 app.post(
   "/api/posts",
   adminAuth,
@@ -163,7 +165,7 @@ app.post(
         tags: tags ? tags.split(",").map(t => t.trim()).filter(Boolean) : [],
         mainImage: mainImageFile ? `/uploads/${mainImageFile.filename}` : "",
         extraImages: extraFiles.map((f) => `/uploads/${f.filename}`),
-        likes: [], // store IPs
+        likes: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
@@ -178,7 +180,7 @@ app.post(
   }
 );
 
-// Update post (admin)
+// Update post
 app.put("/api/posts/:id", adminAuth, upload.single("mainImage"), async (req, res) => {
   try {
     const posts = await readJSON(POSTS_FILE, []);
@@ -200,14 +202,13 @@ app.put("/api/posts/:id", adminAuth, upload.single("mainImage"), async (req, res
   }
 });
 
-// Delete post (admin)
+// Delete post
 app.delete("/api/posts/:id", adminAuth, async (req, res) => {
   try {
     let posts = await readJSON(POSTS_FILE, []);
     posts = posts.filter(p => p.id !== req.params.id);
     await writeJSON(POSTS_FILE, posts);
 
-    // also remove comments for that post
     let comments = await readJSON(COMMENTS_FILE, []);
     comments = comments.filter(c => c.postId !== req.params.id);
     await writeJSON(COMMENTS_FILE, comments);
@@ -219,15 +220,14 @@ app.delete("/api/posts/:id", adminAuth, async (req, res) => {
   }
 });
 
-// Categories endpoint (derived)
+// Categories endpoint
 app.get("/api/categories", async (req, res) => {
   const posts = await readJSON(POSTS_FILE, []);
   const cats = Array.from(new Set(posts.map(p => p.category || "Uncategorized")));
   res.json(cats);
 });
 
-// -------- LIKES --------
-// Toggle like by IP (one like per IP). Returns {likes}
+// Likes toggle
 app.post("/api/posts/:id/like", async (req, res) => {
   try {
     const ip = req.headers["x-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress;
@@ -236,12 +236,8 @@ app.post("/api/posts/:id/like", async (req, res) => {
     if (idx === -1) return res.status(404).json({ ok: false, message: "Post not found" });
 
     const likes = posts[idx].likes || [];
-    if (likes.includes(ip)) {
-      // unlike
-      posts[idx].likes = likes.filter(l => l !== ip);
-    } else {
-      posts[idx].likes = [...likes, ip];
-    }
+    if (likes.includes(ip)) posts[idx].likes = likes.filter(l => l !== ip);
+    else posts[idx].likes.push(ip);
 
     await writeJSON(POSTS_FILE, posts);
     res.json({ ok: true, likes: posts[idx].likes.length });
@@ -251,40 +247,28 @@ app.post("/api/posts/:id/like", async (req, res) => {
   }
 });
 
-// -------- COMMENTS --------
-// Get comments for postId
+// Comments routes
 app.get("/api/comments/:postId", async (req, res) => {
   try {
     const comments = await readJSON(COMMENTS_FILE, []);
-    const filtered = comments.filter(c => c.postId === req.params.postId);
-    res.json(filtered);
+    res.json(comments.filter(c => c.postId === req.params.postId));
   } catch (err) {
     console.error(err);
     res.status(500).json({ ok: false });
   }
 });
 
-// Add a comment (visitor) - no admin approval required
 app.post("/api/comments/:postId", async (req, res) => {
   try {
     const { name = "Anonymous", text } = req.body || {};
     if (!text) return res.status(400).json({ ok: false, message: "Text required" });
 
-    // ensure post exists
     const posts = await readJSON(POSTS_FILE, []);
     if (!posts.find(p => p.id === req.params.postId)) return res.status(400).json({ ok: false, message: "Invalid postId" });
 
     const comments = await readJSON(COMMENTS_FILE, []);
     const ip = req.headers["x-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress;
-    const c = {
-      id: uuidv4(),
-      postId: req.params.postId,
-      name,
-      text,
-      ip,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+    const c = { id: uuidv4(), postId: req.params.postId, name, text, ip, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
     comments.push(c);
     await writeJSON(COMMENTS_FILE, comments);
     res.json({ ok: true, data: c });
@@ -294,7 +278,7 @@ app.post("/api/comments/:postId", async (req, res) => {
   }
 });
 
-// Edit comment (author by IP or admin)
+// Edit comment
 app.put("/api/comments/:id", async (req, res) => {
   try {
     const { text } = req.body || {};
@@ -306,10 +290,7 @@ app.put("/api/comments/:id", async (req, res) => {
 
     const ip = req.headers["x-forwarded-for"]?.split(",")[0].trim() || req.socket.remoteAddress;
     const isAdminHeader = req.headers["x-admin-pass"] === (process.env.ADMIN_PASS || ADMIN_PASS);
-
-    if (comments[idx].ip !== ip && !isAdminHeader) {
-      return res.status(401).json({ ok: false, message: "Not allowed to edit" });
-    }
+    if (comments[idx].ip !== ip && !isAdminHeader) return res.status(401).json({ ok: false, message: "Not allowed to edit" });
 
     comments[idx].text = text;
     comments[idx].updatedAt = new Date().toISOString();
@@ -321,7 +302,7 @@ app.put("/api/comments/:id", async (req, res) => {
   }
 });
 
-// Delete comment (admin only)
+// Delete comment (admin)
 app.delete("/api/comments/:id", adminAuth, async (req, res) => {
   try {
     let comments = await readJSON(COMMENTS_FILE, []);
@@ -334,7 +315,7 @@ app.delete("/api/comments/:id", adminAuth, async (req, res) => {
   }
 });
 
-// -------- ABOUT --------
+// ABOUT routes
 app.get("/api/about", async (req, res) => {
   try {
     const about = await readJSON(ABOUT_FILE, { text: "", email: "", social: {} });
@@ -345,15 +326,10 @@ app.get("/api/about", async (req, res) => {
   }
 });
 
-// Save about (admin)
 app.post("/api/about", adminAuth, async (req, res) => {
   try {
     const payload = req.body || {};
-    const about = {
-      text: payload.text || "",
-      email: payload.email || "",
-      social: payload.social || {}
-    };
+    const about = { text: payload.text || "", email: payload.email || "", social: payload.social || {} };
     await writeJSON(ABOUT_FILE, about);
     res.json({ ok: true, data: about });
   } catch (err) {
@@ -362,20 +338,13 @@ app.post("/api/about", adminAuth, async (req, res) => {
   }
 });
 
-// Upload helper for admin (single file)
+// Upload helper
 app.post("/api/upload", adminAuth, upload.single("image"), (req, res) => {
   if (!req.file) return res.status(400).json({ ok: false, message: "No file uploaded" });
   res.json({ ok: true, url: `/uploads/${req.file.filename}` });
 });
 
 // Start server
-app.get('/sitemap.xml', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'));
-});
-app.get('/sitemap.xml', (req, res) => {
-  res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'), { headers: { 'Content-Type': 'application/xml' } });
-});
-
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Public: http://localhost:${PORT}/index.html`);
