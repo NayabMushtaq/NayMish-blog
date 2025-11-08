@@ -368,6 +368,10 @@ app.post("/api/upload", adminAuth, upload.single("image"), (req, res) => {
 });
 
 // Start server
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'));
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   console.log(`Public: http://localhost:${PORT}/index.html`);
