@@ -3,6 +3,10 @@ const express = require("express");
 const fs = require("fs");
 const fsp = require("fs").promises;
 const path = require("path");
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'));
+});
+
 const multer = require("multer");
 const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
@@ -11,9 +15,6 @@ require("dotenv").config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 const ADMIN_PASS = process.env.ADMIN_PASS || "admin123";
-app.get('/sitemap.xml', (req, res) => {
-  res.sendFile(path.join(__dirname, 'sitemap.xml'));
-});
 
 // Directories & files
 const ROOT = path.resolve();
