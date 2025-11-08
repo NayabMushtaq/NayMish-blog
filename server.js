@@ -372,6 +372,9 @@ app.post("/api/upload", adminAuth, upload.single("image"), (req, res) => {
 app.get('/sitemap.xml', (req, res) => {
   res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'));
 });
+app.get('/sitemap.xml', (req, res) => {
+  res.sendFile(path.join(PUBLIC_DIR, 'sitemap.xml'), { headers: { 'Content-Type': 'application/xml' } });
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
