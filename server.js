@@ -75,6 +75,10 @@ app.use("/sitemap.xml", express.static(path.join(PUBLIC_DIR, "sitemap.xml")));
 
 // Serve static public files
 app.use(express.static(PUBLIC_DIR));
+app.get("/sitemap.xml", (req, res) => {
+  res.setHeader("Content-Type", "application/xml");
+  res.sendFile(path.join(PUBLIC_DIR, "sitemap.xml"));
+});
 
 // Serve private admin files under /secret-admin
 app.use("/secret-admin", express.static(PRIVATE_DIR));
